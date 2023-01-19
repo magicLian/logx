@@ -2,6 +2,7 @@ package logx
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 )
@@ -90,4 +91,26 @@ func (l *Logx) Fatalf(format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
 	msg = fmt.Sprintf("[%s] %s", l.prefix, msg)
 	l.log.Fatalf(msg)
+}
+
+func ParseLevel(lvl string) (LogxLevel, error) {
+	switch strings.ToLower(lvl) {
+	case "panic":
+		return PanicLevel, nil
+	case "fatal":
+		return FatalLevel, nil
+	case "error":
+		return ErrorLevel, nil
+	case "warn", "warning":
+		return WarnLevel, nil
+	case "info":
+		return InfoLevel, nil
+	case "debug":
+		return DebugLevel, nil
+	case "trace":
+		return TraceLevel, nil
+	}
+
+	var l LogxLevel
+	return l, fmt.Errorf("not a valid logrus Level: %q", lvl)
 }
